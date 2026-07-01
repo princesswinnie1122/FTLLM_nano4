@@ -1,0 +1,22 @@
+[
+  {"instruction": "What is the capital of Taiwan?", "input": "", "output": "The capital of Taiwan is Taipei."},
+  {"instruction": "Translate 'hello' into Traditional Chinese.", "input": "", "output": "你好"},
+  {"instruction": "Name three renewable energy sources.", "input": "", "output": "Solar, wind, and hydroelectric power are three common renewable energy sources."},
+  {"instruction": "Summarize the purpose of a SLURM scheduler in one sentence.", "input": "", "output": "SLURM allocates and schedules compute resources on a cluster so multiple users can share jobs fairly and efficiently."},
+  {"instruction": "What does LoRA stand for in the context of LLM fine-tuning?", "input": "", "output": "LoRA stands for Low-Rank Adaptation, a parameter-efficient fine-tuning method."},
+  {"instruction": "List two benefits of fine-tuning a smaller base model instead of a larger one.", "input": "", "output": "Fine-tuning a smaller model requires less GPU memory and trains faster, making it cheaper and more accessible."},
+  {"instruction": "Convert 10 kilometers to miles.", "input": "", "output": "10 kilometers is approximately 6.21 miles."},
+  {"instruction": "What is an H200 GPU commonly used for?", "input": "", "output": "The H200 GPU is commonly used for large-scale AI training and inference workloads due to its high memory bandwidth and capacity."},
+  {"instruction": "Explain what a dataset in Alpaca format looks like.", "input": "", "output": "An Alpaca-format dataset is a JSON list of objects, each with an instruction, an optional input, and an output field."},
+  {"instruction": "Give a short greeting suitable for a research assistant chatbot.", "input": "", "output": "Hello! I'm here to help with your research questions. What would you like to know?"},
+  {"instruction": "What is the boiling point of water at sea level in Celsius?", "input": "", "output": "Water boils at 100 degrees Celsius at sea level."},
+  {"instruction": "Name the largest ocean on Earth.", "input": "", "output": "The Pacific Ocean is the largest ocean on Earth."},
+  {"instruction": "What is the main advantage of QLoRA over full fine-tuning?", "input": "", "output": "QLoRA drastically reduces GPU memory usage by fine-tuning a quantized base model, making it possible to tune large models on smaller hardware."},
+  {"instruction": "Describe what a SLURM partition is.", "input": "", "output": "A SLURM partition is a logical grouping of compute nodes with shared scheduling policies, such as a time limit or resource type."},
+  {"instruction": "What unit is used to measure GPU memory?", "input": "", "output": "GPU memory is typically measured in gigabytes (GB)."},
+  {"instruction": "Give an example of a common activation function in neural networks.", "input": "", "output": "ReLU (Rectified Linear Unit) is a common activation function used in neural networks."},
+  {"instruction": "What does the acronym LLM stand for?", "input": "", "output": "LLM stands for Large Language Model."},
+  {"instruction": "What is the purpose of an epoch in model training?", "input": "", "output": "An epoch refers to one complete pass through the entire training dataset during model training."},
+  {"instruction": "Name a common file format for storing fine-tuning datasets.", "input": "", "output": "JSON or JSONL is a common file format for storing fine-tuning datasets."},
+  {"instruction": "What is the role of a learning rate in training?", "input": "", "output": "The learning rate controls how much model weights are adjusted with respect to the loss gradient during each training step."}
+]

@@ -8,7 +8,8 @@ few questions!
 ## Setup
 
 ```bash
-cd HPC_jobs && bash setup.sh
+git clone https://github.com/princesswinnie1122/FTLLM_nano4.git
+cd FTLLM_nano4 && bash setup.sh
 ```
 
 ## Try it now

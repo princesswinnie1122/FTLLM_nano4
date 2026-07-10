@@ -1,7 +1,7 @@
 # LLM Fine-Tuning Wizard for NANO4
 
 Train ("fine-tune") a language model on NANO4's GPUs by answering a
-few questions — no coding or SLURM knowledge needed.
+few questions!
 
 > 繁體中文版：[README.zh-TW.md](README.zh-TW.md)
 
@@ -56,6 +56,18 @@ help — 50–100 good ones is a reasonable starting point. (Multi-turn
 conversations are also supported — "ShareGPT" style; the wizard will
 tell you if your file's format isn't recognized.)
 
+### From the MMLU Dataset web system
+
+If your data lives in the MMLU 資料集系統 web app, you don't need to
+hand-write the JSON. Open the **題目資料庫 (Question Database)** tab,
+click the download menu on a dataset, and choose **匯出訓練格式
+(Alpaca)**. It downloads `<dataset>_alpaca.json` already in the format
+above. `scp` that file to nano4 and give its path to the wizard:
+
+```bash
+scp <dataset>_alpaca.json <user>@nano4.nchc.org.tw:/work/<user>/
+```
+
 ## Choosing a method
 
 - **LoRA** — default, fast, low memory. Use this unless you have a reason not to.
@@ -84,4 +96,3 @@ them and lets you confirm or override.
 - `setup.sh` — one-time installer
 - `examples/sample_dataset.json` — example dataset used above
 - `lib/` — cluster policy, model list, dataset validation, config generation (see comments in each file)
-

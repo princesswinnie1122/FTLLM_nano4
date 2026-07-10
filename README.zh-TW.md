@@ -1,6 +1,6 @@
 # NANO4 語言模型微調精靈
 
-只要回答幾個問題，就能在 NANO4 GPU 叢集上微調語言模型 —— 不需要寫程式，也不需要懂 SLURM。
+只要回答幾個問題，就能在 NANO4 GPU 叢集上微調語言模型 ！
 
 > English version: [README.md](README.md)
 
@@ -53,6 +53,17 @@ tail -f /work/$USER/hpc-llm-finetune/jobs/<job>/logs/*.out   # 按 Ctrl+C 停止
 執行精靈時輸入檔案的完整路徑即可。範例數量越多通常越好 —— 50–100
 筆是不錯的起點。（也支援多輪對話的「ShareGPT」格式；如果檔案格式無法辨識，精靈會告訴你。）
 
+### 從 MMLU 資料集系統取得資料
+
+如果資料在 [MMLU 資料集系統網站](http://103.124.75.139/)，不需要手動寫 JSON。開啟
+**題目資料庫** 分頁，點資料集的下載選單，選 **匯出訓練格式
+(Alpaca)**，就會下載一個已符合上述格式的 `<資料集>_alpaca.json`。
+把它 `scp` 上 nano4，再把路徑交給精靈即可：
+
+```bash
+scp <資料集>_alpaca.json <帳號>@nano4.nchc.org.tw:/work/<帳號>/
+```
+
 ## 如何選擇方法
 
 - **LoRA** —— 預設選項，速度快、記憶體用量低，沒有特別理由就選這個。
@@ -80,4 +91,3 @@ tail -f /work/$USER/hpc-llm-finetune/jobs/<job>/logs/*.out   # 按 Ctrl+C 停止
 - `setup.sh` —— 第一次使用前的安裝腳本
 - `examples/sample_dataset.json` —— 上面用到的範例資料集
 - `lib/` —— 叢集規則、模型清單、資料集驗證、設定檔產生（細節見各檔案內的註解）
-

@@ -59,7 +59,7 @@ tell you if your file's format isn't recognized.)
 
 ### From the MMLU Dataset web system
 
-If your data lives in the MMLU 資料集系統 web app, you don't need to
+If your data lives in the [MMLU 資料集系統 web app](http://103.124.75.139/), you don't need to
 hand-write the JSON. Open the **題目資料庫 (Question Database)** tab,
 click the download menu on a dataset, and choose **匯出訓練格式
 (Alpaca)**. It downloads `<dataset>_alpaca.json` already in the format

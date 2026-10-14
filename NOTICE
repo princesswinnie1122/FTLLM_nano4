@@ -1,7 +1,0 @@
-FTLLM_nano4
-Copyright (c) 2026 Winnie Sheng
-
-Developed at the National Center for High-Performance Computing (NCHC), Taiwan.
-
-This tool is a wizard around LLaMA-Factory (https://github.com/hiyouga/LLaMA-Factory),
-which is licensed under the Apache License 2.0.

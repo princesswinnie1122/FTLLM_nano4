@@ -106,13 +106,15 @@ def short_label(item: dict, lang: str) -> str:
     return text.split("(")[0].split("（")[0].strip()
 
 
-def estimate_gpus(params_billion: float, gb_per_billion: float, gpu_mem_gb: int) -> int:
-    """Rough single-node GPU count estimate. Always returns 1-8."""
+def estimate_gpus(
+    params_billion: float, gb_per_billion: float, gpu_mem_gb: int, max_gpus: int = 8
+) -> int:
+    """Rough single-node GPU count estimate, clamped to 1..max_gpus."""
     import math
 
     est_gb = params_billion * gb_per_billion
     gpus = max(1, math.ceil(est_gb / gpu_mem_gb))
-    return min(gpus, 8)
+    return min(gpus, max_gpus)
 
 
 def estimate_mem_gb(params_billion: float, gb_per_billion: float) -> float:

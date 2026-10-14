@@ -16,7 +16,7 @@ fi
 
 "${VENV}/bin/pip" install -q --upgrade pip setuptools wheel
 "${VENV}/bin/pip" install -q torch --index-url https://download.pytorch.org/whl/cu124
-"${VENV}/bin/pip" install -q "llamafactory[metrics]" questionary huggingface_hub[cli]
+"${VENV}/bin/pip" install -q "llamafactory[metrics]" questionary huggingface_hub[cli] pyyaml
 
 echo ""
 echo "Done. Verify with:"

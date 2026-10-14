@@ -1,0 +1,15 @@
+name: Generic SLURM
+work_root: ~/llm-finetune
+account_required: false
+gpu_flag: gres
+gpu_model: GPU
+gpu_mem_gb: 24
+max_cpus_per_gpu: 8
+max_mem_per_gpu: 64
+max_gpus_per_node: 8
+module_loads: []
+default_partition: gpu
+partitions:
+  gpu:
+    max_time: "24:00:00"
+    description: "GPU partition"

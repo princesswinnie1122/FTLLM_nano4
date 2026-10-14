@@ -73,11 +73,38 @@ scp <資料集>_alpaca.json <帳號>@nano4.nchc.org.tw:/work/<帳號>/
 
 不需要自己計算 GPU 數量 —— 精靈會幫你估算，並讓你確認或修改。
 
+## 在哪裡執行：SLURM 或本機
+
+精靈會自動選擇執行方式 —— 有 `sbatch` 就用 **SLURM**，否則**本機**直接執行；
+兩者共用同一份 `train_config.yaml`，訓練本身完全相同。可用 `--backend slurm`
+或 `--backend local` 強制指定。
+
+- **SLURM** —— 產生 sbatch 腳本並排進佇列，需要計畫帳號（若該叢集要求）與分區／時間上限。
+- **本機** —— 直接在精靈執行的機器上跑 `llamafactory-cli train`，不排隊、不需帳號。
+  適合沒有 SLURM 的 GPU 工作站、Colab、或已經 `salloc` 進互動節點、手上已有 GPU 的情況。
+  會產生可重跑的 `run_local.sh`，即時輸出並寫到 `logs/run_local.log`。GPU 記憶體與數量
+  由 `nvidia-smi` 偵測，讓估算符合實際的卡。
+
+## 在其他叢集上執行
+
+叢集資訊放在 `profiles/` 底下的 YAML 設定檔。預設是 `profiles/nano4.yaml`，
+用 `--site` 指定其他設定檔：
+
+```bash
+python finetune_wizard.py --site profiles/generic_slurm.yaml
+```
+
+設定檔包含 `work_root`、`partitions`、`gpu_flag`（`gpus-per-node` 或 `gres`）、
+`account_required`、`gpu_mem_gb`、`max_cpus_per_gpu`、`max_mem_per_gpu`、
+`module_loads`。支援新叢集只要新增一份設定檔，不需改程式碼。
+
 ## 結果在哪裡
 
 ```
-/work/$USER/hpc-llm-finetune/jobs/<日期時間>_<工作名稱>/output/
+<work_root>/jobs/<日期時間>_<工作名稱>/output/
 ```
+
+`work_root` 由設定檔決定（NANO4 為 `/work/$USER/hpc-llm-finetune`）。
 
 ## 常見問題
 
@@ -90,5 +117,16 @@ scp <資料集>_alpaca.json <帳號>@nano4.nchc.org.tw:/work/<帳號>/
 
 - `finetune_wizard.py` —— 精靈主程式
 - `setup.sh` —— 第一次使用前的安裝腳本
+- `profiles/` —— 叢集設定檔（`nano4.yaml`、`generic_slurm.yaml`）
 - `examples/sample_dataset.json` —— 上面用到的範例資料集
-- `lib/` —— 叢集規則、模型清單、資料集驗證、設定檔產生（細節見各檔案內的註解）
+- `lib/` —— 設定檔載入、GPU 偵測、模型清單、資料集驗證、設定檔產生（細節見各檔案內的註解）
+
+## 授權
+
+採用 Apache License 2.0 —— 見 [LICENSE](LICENSE) 與 [NOTICE](NOTICE)。
+
+Copyright (c) 2026 Winnie Sheng。開發於國家高速網路與計算中心（NCHC）。
+
+此授權僅涵蓋本工具。你微調的基礎模型（Llama、Qwen 等）各有**自己的授權條款**——
+例如 Llama Community License、Qwen License——這些條款規範你對模型權重的使用、
+以及你訓練或散布的模型。使用前請先確認所選模型的授權。

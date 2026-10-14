@@ -25,6 +25,49 @@ STRINGS = {
             "  請先執行：bash setup.sh"
         ),
     },
+    "mode_line": {
+        "en": "Site profile: {site}   |   Backend: {backend}",
+        "zh": "叢集設定檔：{site}   |   執行方式：{backend}",
+    },
+    "local_intro": {
+        "en": (
+            "\nLocal mode runs training right here on this machine, in the "
+            "foreground -- no project account or partition needed. Make sure "
+            "this machine has enough GPU memory for your model + method."
+        ),
+        "zh": (
+            "\n本機模式會直接在這台機器上、以前景方式執行訓練 —— "
+            "不需要計畫帳號或分區。請確認這台機器的 GPU 記憶體足夠跑你選的模型 + 方法。"
+        ),
+    },
+    "local_generated": {
+        "en": "\nGenerated job files in: {job_dir}\n  - {config}\n  - {script}",
+        "zh": "\n已產生檔案於：{job_dir}\n  - {config}\n  - {script}",
+    },
+    "local_run_confirm": {
+        "en": "Start training now on this machine? (runs in the foreground; Ctrl+C to stop)",
+        "zh": "要現在就在這台機器上開始訓練嗎？（前景執行，按 Ctrl+C 可中止）",
+    },
+    "local_not_run": {
+        "en": "\nNot started. You can run it later with:\n  bash {script}",
+        "zh": "\n尚未開始。你之後可以用這個指令執行：\n  bash {script}",
+    },
+    "local_gpu_cap": {
+        "en": "  Capped to {n} GPU(s) detected on this machine.",
+        "zh": "  已調整為本機偵測到的 {n} 顆 GPU。",
+    },
+    "local_starting": {
+        "en": "\nStarting training (live output below). This can take a while...\n",
+        "zh": "\n開始訓練（下方為即時輸出），可能需要一段時間...\n",
+    },
+    "local_done": {
+        "en": "\n✓ Training finished. Output saved to:\n  {output_dir}\n  Log: {log_path}",
+        "zh": "\n✓ 訓練完成。結果已儲存於：\n  {output_dir}\n  紀錄：{log_path}",
+    },
+    "local_failed": {
+        "en": "Training failed (exit code {code}). See the output above and the log: {log_path}",
+        "zh": "訓練失敗（結束代碼 {code}）。請看上方輸出與紀錄檔：{log_path}",
+    },
     "account_intro": {
         "en": (
             "Every job on this cluster must be charged to a project account "
@@ -86,16 +129,8 @@ STRINGS = {
         "zh": "要使用幾顆 GPU（1-8）？",
     },
     "time_choice_prompt": {
-        "en": "How long do you expect this run to take?",
-        "zh": "你預期這個工作要跑多久？",
-    },
-    "time_choice_dev": {
-        "en": "Quick test (≤ 4 hours) -- dev partition",
-        "zh": "快速測試（4 小時內）—— dev 分區",
-    },
-    "time_choice_8gpus": {
-        "en": "Full training run (≤ 2 days) -- 8gpus partition",
-        "zh": "正式訓練（2 天內）—— 8gpus 分區",
+        "en": "Which partition / expected run time?",
+        "zh": "要用哪個分區 / 預期執行時間？",
     },
     "time_limit_prompt": {
         "en": "Wall-clock time limit (max {max_time} for this partition):",

@@ -1,0 +1,18 @@
+name: NANO4
+work_root: /work/{user}/hpc-llm-finetune
+account_required: true
+gpu_flag: gpus-per-node
+gpu_model: H200
+gpu_mem_gb: 140
+max_cpus_per_gpu: 12
+max_mem_per_gpu: 200
+max_gpus_per_node: 8
+module_loads: []
+default_partition: "8gpus"
+partitions:
+  dev:
+    max_time: "04:00:00"
+    description: "Quick test / debug run (max 4 hours)"
+  "8gpus":
+    max_time: "2-00:00:00"
+    description: "Standard training run (max 2 days)"

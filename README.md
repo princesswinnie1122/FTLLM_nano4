@@ -78,11 +78,44 @@ scp <dataset>_alpaca.json <user>@nano4.nchc.org.tw:/work/<user>/
 You don't need to work out GPU counts yourself — the wizard estimates
 them and lets you confirm or override.
 
+## Where it runs: SLURM or local
+
+The wizard picks a backend automatically — **SLURM** when `sbatch` is
+available, otherwise a **local** run — and both share the same
+`train_config.yaml`, so the training itself is identical. Force one with
+`--backend slurm` or `--backend local`.
+
+- **SLURM** — writes an sbatch script and queues the job. Needs a project
+  account (if the site requires one) and a partition/time limit.
+- **Local** — runs `llamafactory-cli train` right where the wizard is
+  running, no queue, no account. Use it on a GPU workstation without SLURM,
+  on Colab, or inside an interactive compute-node session (`salloc`) where
+  you already hold the GPUs. It writes a `run_local.sh` you can re-run,
+  streams output live, and tees it to `logs/run_local.log`. GPU memory and
+  count are read from `nvidia-smi` so the estimate fits the actual card.
+
+## Running on another cluster
+
+Cluster facts live in a YAML site profile under `profiles/`. The default is
+`profiles/nano4.yaml`; point the wizard at another with `--site`:
+
+```bash
+python finetune_wizard.py --site profiles/generic_slurm.yaml
+```
+
+A profile sets `work_root`, `partitions`, `gpu_flag` (`gpus-per-node` or
+`gres`), `account_required`, `gpu_mem_gb`, `max_cpus_per_gpu`,
+`max_mem_per_gpu`, and `module_loads`. Supporting a new cluster is a new
+profile, not a code change.
+
 ## Where results go
 
 ```
-/work/$USER/hpc-llm-finetune/jobs/<date-time>_<job-name>/output/
+<work_root>/jobs/<date-time>_<job-name>/output/
 ```
+
+`work_root` comes from the site profile (`/work/$USER/hpc-llm-finetune` on
+NANO4).
 
 ## Troubleshooting
 
@@ -95,5 +128,18 @@ them and lets you confirm or override.
 
 - `finetune_wizard.py` — the wizard
 - `setup.sh` — one-time installer
+- `profiles/` — site profiles (`nano4.yaml`, `generic_slurm.yaml`)
 - `examples/sample_dataset.json` — example dataset used above
-- `lib/` — cluster policy, model list, dataset validation, config generation (see comments in each file)
+- `lib/` — site profile loader, GPU detection, model list, dataset validation, config generation (see comments in each file)
+
+## License
+
+Licensed under the Apache License 2.0 — see [LICENSE](LICENSE) and [NOTICE](NOTICE).
+
+Copyright (c) 2026 Winnie Sheng. Developed at the National Center for
+High-Performance Computing (NCHC), Taiwan.
+
+This license covers this tool only. The base models you fine-tune (Llama,
+Qwen, …) each carry their own separate licenses — e.g. the Llama Community
+License and the Qwen License — which govern your use of the weights and any
+models you train or distribute. Review the license of whichever model you choose.

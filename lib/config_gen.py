@@ -1,11 +1,10 @@
 """Generate LLaMA-Factory dataset registration, training YAML, and the
-sbatch script for a fine-tuning job, from the wizard's collected answers."""
+launch script (sbatch or a local runner) for a fine-tuning job, from the
+wizard's collected answers."""
 
 import json
 import os
 import textwrap
-
-from . import cluster_policy
 
 
 def dataset_info_entry(fmt: str) -> dict:
@@ -119,6 +118,12 @@ def write_train_config(
     return config_path, output_dir
 
 
+def _train_launcher(cli: str, train_config_path: str, gpus: int) -> str:
+    """The llamafactory-cli invocation shared by the slurm and local backends."""
+    multi_gpu_env = f"FORCE_TORCHRUN=1 NPROC_PER_NODE={gpus} " if gpus > 1 else ""
+    return f'{multi_gpu_env}"{cli}" train "{train_config_path}"'
+
+
 def write_sbatch_script(
     job_dir: str,
     job_name: str,
@@ -128,42 +133,87 @@ def write_sbatch_script(
     cpus_per_task: int,
     mem_gb: int,
     time_limit: str,
-    venv_python: str,
+    cli: str,
     train_config_path: str,
     hf_home: str,
+    gpu_flag: str,
+    module_loads: list,
 ) -> str:
     logs_dir = os.path.join(job_dir, "logs")
     os.makedirs(logs_dir, exist_ok=True)
 
-    venv_bin = os.path.dirname(venv_python)
-    cli = os.path.join(venv_bin, "llamafactory-cli")
-    multi_gpu_env = f"FORCE_TORCHRUN=1 NPROC_PER_NODE={gpus} " if gpus > 1 else ""
-    launcher = f'{multi_gpu_env}"{cli}" train "{train_config_path}"'
+    gpu_directive = (
+        f"#SBATCH --gres=gpu:{gpus}"
+        if gpu_flag == "gres"
+        else f"#SBATCH --gpus-per-node={gpus}"
+    )
+
+    lines = ["#!/bin/bash", f"#SBATCH --job-name={job_name}"]
+    if account:
+        lines.append(f"#SBATCH --account={account}")
+    lines += [
+        f"#SBATCH --partition={partition}",
+        gpu_directive,
+        f"#SBATCH --cpus-per-task={cpus_per_task}",
+        f"#SBATCH --mem={mem_gb}G",
+        f"#SBATCH --time={time_limit}",
+        f"#SBATCH --output={logs_dir}/%x-%j.out",
+        f"#SBATCH --error={logs_dir}/%x-%j.err",
+        "",
+        "set -euo pipefail",
+        "",
+        f'export HF_HOME="{hf_home}"',
+        "",
+    ]
+    for module in module_loads:
+        lines.append(f"module load {module}")
+    if module_loads:
+        lines.append("")
+    lines += [
+        'echo "Node: $(hostname)"',
+        "nvidia-smi --query-gpu=name,memory.total --format=csv",
+        "",
+        _train_launcher(cli, train_config_path, gpus),
+        "",
+    ]
+
+    path = os.path.join(job_dir, "submit.sbatch")
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+    os.chmod(path, 0o755)
+    return path
+
+
+def write_local_script(
+    job_dir: str,
+    gpus: int,
+    cli: str,
+    train_config_path: str,
+    hf_home: str,
+) -> tuple:
+    """Write run_local.sh, which runs the same training in the foreground on
+    the current machine (no SLURM). Returns (script_path, log_path)."""
+    logs_dir = os.path.join(job_dir, "logs")
+    os.makedirs(logs_dir, exist_ok=True)
+    log_path = os.path.join(logs_dir, "run_local.log")
+
+    launcher = _train_launcher(cli, train_config_path, gpus)
 
     script = textwrap.dedent(f"""\
         #!/bin/bash
-        #SBATCH --job-name={job_name}
-        #SBATCH --account={account}
-        #SBATCH --partition={partition}
-        #SBATCH --gpus-per-node={gpus}
-        #SBATCH --cpus-per-task={cpus_per_task}
-        #SBATCH --mem={mem_gb}G
-        #SBATCH --time={time_limit}
-        #SBATCH --output={logs_dir}/%x-%j.out
-        #SBATCH --error={logs_dir}/%x-%j.err
-
         set -euo pipefail
 
         export HF_HOME="{hf_home}"
 
-        echo "Node: $(hostname)"
-        nvidia-smi --query-gpu=name,memory.total --format=csv
+        echo "Host: $(hostname)"
+        nvidia-smi --query-gpu=name,memory.total --format=csv \\
+            || echo "(no nvidia-smi -- training will fall back to CPU and be very slow)"
 
-        {launcher}
+        {launcher} 2>&1 | tee "{log_path}"
         """)
 
-    path = os.path.join(job_dir, "submit.sbatch")
+    path = os.path.join(job_dir, "run_local.sh")
     with open(path, "w", encoding="utf-8") as f:
         f.write(script)
     os.chmod(path, 0o755)
-    return path
+    return path, log_path
